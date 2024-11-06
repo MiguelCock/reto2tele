@@ -42,6 +42,8 @@ volumeBindingMode: Immediate
 
 kubectl apply -f storage-class.yaml
 
+kubectl get storageclass efs-sc
+
 ===========================================================================
 
 nano drupal-pv.yaml
@@ -275,7 +277,7 @@ metadata:
   name: drupal-ingress
   namespace: default  
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx 
   rules:
