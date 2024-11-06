@@ -1,6 +1,6 @@
 aws eks --region us-east-1 update-kubeconfig --name drupal
 
-aws eks create-nodegroup --cluster-name drupal --nodegroup-name kokc_drupal --node-role arn:aws:iam::820176242712:role/LabRole --subnets subnet-0f210fe533155c168 subnet-0d0b759bb85986f2d subnet-0372e2d7ec6085b09 --scaling-config minSize=1,maxSize=3,desiredSize=2 --instance-types t3.medium --ami-type AL2_x86_64
+aws eks create-nodegroup --cluster-name drupal --nodegroup-name drupal --node-role arn:aws:iam::211125606524:role/LabRole --subnets subnet-0c638baa7c1e2fc33 subnet-0ce92114bc9bae8b7 subnet-0d83bd8f729c26bf3 --scaling-config minSize=1,maxSize=3,desiredSize=2 --instance-types t3.medium --ami-type AL2_x86_64
 
 kubectl get all
 
@@ -17,14 +17,30 @@ helm repo add stable https://charts.helm.sh/stable
 helm repo update
 
 
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
+//helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+//helm repo update
 
 ===========================================================================
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
 
 kubectl get pods -n ingress-nginx
+
+===========================================================================
+
+nano storage-class.yaml
+
+########################
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: efs-sc
+provisioner: efs.csi.aws.com
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
+########################
+
+kubectl apply -f storage-class.yaml
 
 ===========================================================================
 
@@ -41,12 +57,17 @@ spec:
   accessModes:
     - ReadWriteMany  
   persistentVolumeReclaimPolicy: Retain
+  storageClassName: efs-sc
   csi:
     driver: efs.csi.aws.com
-    volumeHandle: fs-02f6f4578210e2c0b
+    volumeHandle: fs-079e9eacb60058c05
+    volumeAttributes:
+      accessPointId: fsap-0021f0f79dec740a2
 ########################
 
 kubectl apply -f drupal-pv.yaml
+
+kubectl get pv
 
 ===========================================================================
 
@@ -60,12 +81,15 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
+  storageClassName: efs-sc
   resources:
     requests:
-      storage: 1Gi
+      storage: 5Gi
 ########################
 
 kubectl apply -f drupal-pvc.yaml
+
+kubectl get pvc
 
 ===========================================================================
 
@@ -81,11 +105,17 @@ spec:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
-  hostPath:
-    path: /mnt/data
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: ebs.csi.aws.com
+    volumeHandle: fs-079e9eacb60058c05
+    volumeAttributes:
+      accessPointId: fsap-0021f0f79dec740a2
 ########################
 
 kubectl apply -f db-pv.yaml
+
+kubectl get pv
 
 ===========================================================================
 
@@ -133,6 +163,8 @@ spec:
 
 kubectl apply -f cluster-issuer.yaml
 
+kubectl get clusterissuer letsencrypt-prod
+
 ===========================================================================
 
 nano drupal-certificate.yaml
@@ -154,6 +186,14 @@ spec:
 ########################
 
 kubectl apply -f drupal-certificate.yaml
+
+kubectl get certificate drupal-tls
+
+kubectl describe certificate drupal-tls -n default
+
+kubectl describe clusterissuer letsencrypt-prod
+
+kubectl logs -l app=cert-manager -n cert-manager
 
 ===========================================================================
 
@@ -222,6 +262,8 @@ spec:
 
 kubectl apply -f deploy.yaml
 
+kubectl get deployment drupal
+
 ===========================================================================
 
 nano ingress.yaml
@@ -254,6 +296,8 @@ spec:
 ########################
 
 kubectl apply -f ingress.yaml
+
+kubectl get ingress drupal-ingress -n default
 
 ===========================================================================
 
@@ -295,6 +339,8 @@ spec:
 ########################
 
 kubectl apply -f deploy-db.yaml
+
+kubectl describe deployment drupal-db
 
 ===========================================================================
 
@@ -339,8 +385,15 @@ kubectl apply -f service-db.yaml
 
 ===========================================================================
 
+kubectl get svc -n ingress-nginx
+
+kubectl get deployments
+kubectl get pods
+
 kubectl describe pod
 
+kubectl patch pv _____ -p '{"metadata":{"finalizers":null}}'
 kubectl delete pod
 
+kubectl scale deployment drupal --replicas=0
 kubectl scale deployment drupal --replicas=1
