@@ -48,10 +48,6 @@ spec:
 
 kubectl apply -f drupal-pv.yaml
 
-kubectl describe pod
-
-kubectl delete pod
-
 ===========================================================================
 
 nano drupal-pvc.yaml
@@ -340,5 +336,11 @@ spec:
 ########################
 
 kubectl apply -f service-db.yaml
+
+===========================================================================
+
+kubectl describe pod
+
+kubectl delete pod
 
 kubectl scale deployment drupal --replicas=1

@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: drupal-ingress
+  namespace: default  
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx 
+  rules:
+    - host: reto2.kokcengine.site
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: drupal-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - reto2.kokcengine.site
+      secretName: tls-secret

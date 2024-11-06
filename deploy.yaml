@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drupal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drupal
+  template:
+    metadata:
+      labels:
+        app: drupal
+    spec:
+      containers:
+        - name: drupal
+          image: bitnami/drupal:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: BITNAMI_DEBUG
+              value: "true"
+            - name: DRUPAL_DATA_TO_PERSIST
+              value: "sites themes modules profiles"
+            - name: DRUPAL_SKIP_BOOTSTRAP
+              value: "yes"
+            - name: DRUPAL_HASH_SALT
+              value: "89f19dbfe6df8d936305a84c0ef632e605dbcd35497a62bf03e6d7faca3ae3f0"
+            - name: DRUPAL_CONFIG_SYNC_DIR
+              value: "/var/www/html/sites/default/files/config"
+            - name: DRUPAL_DATABASE_HOST
+              value: 'db-service'
+            - name: DRUPAL_DATABASE_NAME
+              value: "drupal"
+            - name: DRUPAL_DATABASE_USER
+              value: "drupaluser"
+            - name: DRUPAL_DATABASE_PASSWORD
+              value: "drupalpassword"
+          volumeMounts:
+            - name: drupal-files
+              mountPath: /var/www/html/modules
+              subPath: modules
+            - name: drupal-files
+              mountPath: /var/www/html/profiles
+              subPath: profiles
+            - name: drupal-files
+              mountPath: /var/www/html/sites
+              subPath: sites
+            - name: drupal-files
+              mountPath: /var/www/html/themes
+              subPath: themes
+            - name: drupal-files
+              mountPath: /var/www/html/sites/default/files/config
+              subPath: config
+      volumes:
+        - name: drupal-files
+          persistentVolumeClaim:
+            claimName: drupal-pvc

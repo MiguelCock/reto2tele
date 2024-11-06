@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: drupal-service
+spec:
+  type: ClusterIP
+  selector:
+    app: drupal
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080

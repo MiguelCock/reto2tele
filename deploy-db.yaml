@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drupal-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drupal-db
+  template:
+    metadata:
+      labels:
+        app: drupal-db
+    spec:
+      containers:
+        - name: mariadb
+          image: bitnami/mariadb:latest
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              value: "your_root_password"
+            - name: MARIADB_DATABASE
+              value: "drupal"
+            - name: MARIADB_USER
+              value: "drupaluser"
+            - name: MARIADB_PASSWORD
+              value: "drupalpassword"
+          ports:
+            - containerPort: 3306
+      volumes:
+        - name: mariadb-storage
+          persistentVolumeClaim:
+            claimName: mariadb-pvc
