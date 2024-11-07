@@ -16,15 +16,29 @@ Tópicos Especiales en Telemática, 2024-2 Reto No 2
 ### Documentación
 ## 1. Breve descripción de la actividad
 
+Desplegar un LMS Moodle en un clúster de alta disponibilidad en Kubernetes autoescalado en nube, con su propio dominio y certificado SSL. El sitio lo llamará: reto2.sudominio.tld.
 
+En este reto2 utilizará un nginx COMO BALANCEADOR DE CARGAS (LB) de la capa de aplicación del moodle. Además de lo anterior, se utilizarán 2 servidores adicionales, uno para BASE DE DATOS (DBServer) y otro para ARCHIVOS(FileServer). El DBServer podrá utilizar la BD en docker (recomendado) o nativa. Y el FileServer implementará un NFSServer.
 
-### 1.1. Qué aspectos cumplió o desarrolló de la actividad propuesta por el profesor 
+### 1.1. Aspectos cumplidos de la actividad propuesta por el profesor
 
-Se creo el vpc, efs, eks, se puso en funcion la base de datos mariadb y nginx, se consiguio un dominio y se conecto al nginx, 
+- **Configuración de infraestructura**:
+  - Creación de una **VPC** (Virtual Private Cloud) para gestionar la red y los recursos de AWS.
+  - Implementación de **EFS** (Elastic File System) para el almacenamiento compartido.
+  - Configuración y despliegue de **EKS** (Elastic Kubernetes Service) para orquestar los contenedores en un entorno administrado de Kubernetes.
 
-### 1.2. Qué aspectos NO cumplió o desarrolló de la actividad propuesta por el profesor 
+- **Base de Datos y Servidor Web**:
+  - Despliegue y puesta en marcha de **MariaDB** como base de datos para Drupal.
+  - Configuración y despliegue de **NGINX** para servir como proxy inverso.
 
-lanzar los pods de drupal
+- **Dominio y Conexión con NGINX**:
+  - Obtención y configuración de un **dominio**.
+  - Conexión del dominio al servicio NGINX, permitiendo el acceso público a los recursos desplegados.
+
+### 1.2. Aspectos no cumplidos de la actividad propuesta por el profesor
+
+- **Despliegue de Drupal**:
+  - No se logró lanzar los **pods de Drupal** en Kubernetes, quedando pendiente la implementación completa del sistema de gestión de contenidos.
 
 ## 2. Información general de diseño de alto nivel, arquitectura, patrones, mejores prácticas utilizadas.
 
@@ -189,6 +203,19 @@ El ambiente de ejecución se gestiona a través de AWS EKS y Kubernetes. El desp
     ```
 
 Estos pasos aseguran un despliegue completo y casi funcional del proyecto Drupal en un ambiente de producción gestionado con Kubernetes en AWS EKS.
+
+![1](fotos/A1.png)
+![2](fotos/A2.png)
+![3](fotos/A3.png)
+![4](fotos/A4.png)
+![5](fotos/A5.png)
+![6](fotos/A6.png)
+![1](fotos/B1.png)
+![2](fotos/B2.png)
+![3](fotos/B3.png)
+![4](fotos/B4.png)
+
+https://www.canva.com/design/DAGVw4ZtU_k/t3epmrAJcgntU4cM7MWPIg/edit?utm_content=DAGVw4ZtU_k&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 ## 5. Referencias:
 
