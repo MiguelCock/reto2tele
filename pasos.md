@@ -277,7 +277,31 @@ metadata:
   name: drupal-ingress
   namespace: default  
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx 
+  rules:
+    - host: reto2.kokcengine.site
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: drupal-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - reto2.kokcengine.site
+      secretName: tls-secret  
+########################
+
+########################
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: drupal-ingress
 spec:
   ingressClassName: nginx 
   rules:
@@ -392,6 +416,8 @@ kubectl get svc -n ingress-nginx
 kubectl get deployments
 kubectl get pods
 
+kubectl get all
+
 kubectl describe pod
 
 kubectl patch pv _____ -p '{"metadata":{"finalizers":null}}'
@@ -399,3 +425,11 @@ kubectl delete pod
 
 kubectl scale deployment drupal --replicas=0
 kubectl scale deployment drupal --replicas=1
+
+chmod +x code.bash
+
+kubectl apply -k "github.com/kubernetes-sigs/aws-efs-csi-driver/deploy/kubernetes/overlays/stable?ref=master"
+
+kubectl kustomize edit fix
+
+kubectl get events
