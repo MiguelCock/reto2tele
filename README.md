@@ -51,7 +51,7 @@ El proyecto Drupal desplegado en AWS EKS (Elastic Kubernetes Service) sigue un d
 La arquitectura de despliegue consta de los siguientes componentes:
 - **EKS Cluster:** Proporciona la infraestructura para gestionar los contenedores.
 - **Node Groups:** Grupos de nodos creados para alojar los pods de Kubernetes.
-- **Persistent Volumes (PV) y Persistent Volume Claims (PVC):** Utilizados para almacenamiento persistente, configurados con Amazon EFS para Drupal y Amazon EBS para MariaDB.
+- **Persistent Volumes (PV) y Persistent Volume Claims (PVC):** Utilizados para almacenamiento persistente, configurados con Amazon EFS para Drupal y MariaDB.
 - **Ingress Controller (NGINX):** Maneja el tráfico HTTP(S) hacia los servicios de Kubernetes.
 - **Cert-Manager:** Gestiona los certificados SSL para HTTPS usando Let's Encrypt.
 - **Helm:** Utilizado para la gestión de paquetes de Kubernetes, facilita el despliegue de aplicaciones complejas.
@@ -75,7 +75,6 @@ La arquitectura de despliegue consta de los siguientes componentes:
 - **NGINX Ingress Controller**
 - **Cert-Manager**
 - **Amazon EFS (Elastic File System)**
-- **Amazon EBS (Elastic Block Store)**
 - **Docker**
 - **Bitnami Docker Images para Drupal y MariaDB**
 - **kubectl**
@@ -202,7 +201,7 @@ El ambiente de ejecución se gestiona a través de AWS EKS y Kubernetes. El desp
     kubectl apply -f service-db.yaml
     ```
 
-Estos pasos aseguran un despliegue completo y casi funcional del proyecto Drupal en un ambiente de producción gestionado con Kubernetes en AWS EKS.
+### Fotos:
 
 ![1](fotos/A1.png)
 ![2](fotos/A2.png)
@@ -214,6 +213,14 @@ Estos pasos aseguran un despliegue completo y casi funcional del proyecto Drupal
 ![2](fotos/B2.png)
 ![3](fotos/B3.png)
 ![4](fotos/B4.png)
+![1](fotos/C1.png)
+![2](fotos/C2.png)
+![3](fotos/C3.png)
+![4](fotos/C4.png)
+![5](fotos/C5.png)
+
+
+### Video
 
 https://www.canva.com/design/DAGVw4ZtU_k/t3epmrAJcgntU4cM7MWPIg/edit?utm_content=DAGVw4ZtU_k&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
